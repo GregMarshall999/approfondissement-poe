@@ -1,21 +1,21 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
-</script>
-
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
+	<ProductLister :product-list="products" />
+	<ProductViewer :products="products"/>
 </template>
+
+<script setup>
+import { ref } from 'vue';
+import ProductLister from './components/ProductLister.vue';
+import ProductViewer from './components/ProductViewer.vue';
+
+const products = ref([
+	{ name: 'Bananes', price: 2 }, 
+	{ name: 'Pommes', price: 1 }, 
+	{ name: 'Salade', price: 3 }, 
+	{ name: 'Abricots', price: 2 }
+])
+
+</script>
 
 <style scoped>
 header {
