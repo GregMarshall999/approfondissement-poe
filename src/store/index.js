@@ -26,6 +26,12 @@ const mutations = {
     }
 }
 
+const actions = {
+    reduicePrice: context => {
+        setTimeout(() => context.commit('REDUICE_PRICE'), 1500);
+    }
+}
+
 const parseHalfPrice = price => {
     let hp = price / 2;
 
@@ -45,7 +51,8 @@ const parseHalfPrice = price => {
 const store = createStore({
     state, 
     getters, 
-    mutations
+    mutations, 
+    actions
 });
 
 export default store;

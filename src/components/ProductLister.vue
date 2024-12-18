@@ -22,7 +22,7 @@ const store = useStore();
 const productList = computed(() => store.getters.getSaleProducts);
 
 const reduicePrice = () => {
-    store.commit('REDUICE_PRICE');
+    store.dispatch('reduicePrice');
 }
 
 </script>
