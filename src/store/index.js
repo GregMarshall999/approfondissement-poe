@@ -20,6 +20,12 @@ const getters = {
     }
 }
 
+const mutations = {
+    REDUICE_PRICE: state => {
+        state.products.forEach(p => p.price -= 1);
+    }
+}
+
 const parseHalfPrice = price => {
     let hp = price / 2;
 
@@ -38,7 +44,8 @@ const parseHalfPrice = price => {
 
 const store = createStore({
     state, 
-    getters
+    getters, 
+    mutations
 });
 
 export default store;

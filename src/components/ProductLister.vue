@@ -8,6 +8,8 @@
                 <span class="price">{{ product.price }}</span>
             </li>
         </ul>
+
+        <button @click="reduicePrice">Réduire Prix</button>
     </div>
 </template>
 
@@ -18,6 +20,10 @@ import { useStore } from 'vuex';
 const store = useStore();
 
 const productList = computed(() => store.getters.getSaleProducts);
+
+const reduicePrice = () => {
+    store.commit('REDUICE_PRICE');
+}
 
 </script>
 
