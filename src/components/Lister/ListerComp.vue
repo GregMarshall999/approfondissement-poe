@@ -1,5 +1,5 @@
 <template>
-    <ul :class="{ admin: isAdmin }">
+    <ul :class="isAdmin ? 'admin': 'default'">
         <li v-for="product in products">
             <span class="name">{{ product.name }}</span>
             <span class="price">{{ product.price }}</span>
@@ -24,42 +24,21 @@ const props = defineProps({
 
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@use '@/scss/Style.scss';
 
-ul.admin {
-    padding: 0;
-
-    li {
-        display: inline-block;
-        margin-right: 10px;
-        margin-top: 10px;
-        padding: 20px;
-        background: rgba(255, 255, 255, 0.432);
-
-        .price {
-            font-weight: bold;
-            color: #e8260c;
-            margin-left: 4px;
-        }
-    }
+.admin {
+    @include Style.product-style(
+        $li-display: inline-block, 
+        $li-background: rgba(255, 255, 255, 0.432),
+        $li_price-display: initial, 
+        $li_price-color: #e8260c, 
+        $li_price-marginLeft: 4px
+    );
 }
 
-ul {
-    padding: 0;
-    list-style-type: none;
-
-    li {
-        margin-right: 10px;
-        margin-top: 10px;
-        padding: 20px;
-        background: rgba(255, 255, 255, 0.151);
-
-        .price {
-            font-weight: bold;
-            color: #bf97db;
-            display: block;
-        }
-    }
+.default {
+    @include Style.product-style;
 }
 
 </style>
