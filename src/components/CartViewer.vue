@@ -2,7 +2,9 @@
     <div class="viewer">
         <h2>Produits disponibles</h2>
 
-        <ListerComp />
+        <ListerComp 
+            @element-selected="i => console.log(i)"
+        />
     </div>
 </template>
 

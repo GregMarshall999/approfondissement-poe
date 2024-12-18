@@ -12,6 +12,9 @@ const state = {
 }
 
 const getters = { 
+    getProduct: state => payload => {
+        return state.products[payload];
+    },
     getProducts: state => {
         if(!state.sales) {
             return state.products;
@@ -35,6 +38,12 @@ const mutations = {
     }, 
     SET_SALES: (state, payload) => {
         state.sales = payload;
+    }, 
+    SET_PRODUCT: (state, payload) => {
+        state.products[payload.index] = payload.product;
+    },
+    DELETE_PRODUCT: (state, payload) => {
+        state.products.splice(payload, 1);
     }
 }
 
@@ -47,6 +56,12 @@ const actions = {
     }, 
     updateSales: (context, payload) => {
         context.commit('SET_SALES', payload);
+    }, 
+    updateProduct: (context, payload) => {
+        context.commit('SET_PRODUCT', payload);
+    },
+    removeProduct: (context, payload) => {
+        context.commit('DELETE_PRODUCT', payload);
     }
 }
 

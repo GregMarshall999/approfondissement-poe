@@ -1,6 +1,7 @@
 @mixin product-style(
     $li-display:block, 
     $li-background: rgba(255, 255, 255, 0.151),
+    $li_hover-background: rgba(255, 255, 255, 0.418),
     $li_price-display: block, 
     $li_price-color: #bf97db, 
     $li_price-marginLeft: 0
@@ -14,6 +15,11 @@
         margin-right: 10px;
         margin-top: 10px;
         padding: 20px;
+        cursor: pointer;
+
+        &:hover {
+            background: $li_hover-background;
+        }
 
         .price {
             display: $li_price-display;
