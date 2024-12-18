@@ -9,7 +9,7 @@
                 <span class="name">{{ product.name }}</span>
             </template>
             
-            <span class="price">{{ product.price }}</span>
+            <span class="price">{{ product.price }}€</span>
         </ElementComp>
         <slot></slot>
     </ul>
@@ -22,7 +22,7 @@ import ElementComp from './ElementComp.vue';
 
 const store = useStore();
 
-const products = computed(() => store.getters.getProducts);
+const products = computed(() => store.getters['products/getProducts']);
 
 const props = defineProps({
     isAdmin: {

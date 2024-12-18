@@ -90,7 +90,7 @@ const selectedProduct = reactive({
 const selectProduct = index => {
     selectedIndex.value = index;
 
-    const storeProd = store.getters.getProduct(index);
+    const storeProd = store.getters['products/getProduct'](index);
 
     selectedProduct.name = storeProd.name;
     selectedProduct.price = storeProd.price;
@@ -102,14 +102,14 @@ const product = reactive({
     price: null
 })
 const newProduct = () => {
-    store.dispatch('addProduct', { ...product });
+    store.dispatch('products/addProduct', { ...product });
     newProductMode.value = false;
     product.name = null;
     product.price = null;
 }
 const updateProduct = () => {
     if(selectedIndex.value != null) {
-        store.dispatch('updateProduct', {
+        store.dispatch('products/updateProduct', {
             index: selectedIndex.value, 
             product: {
                 name: selectedProduct.name, 
@@ -124,7 +124,7 @@ const updateProduct = () => {
 }
 const deleteProduct = () => {
     if(selectedIndex.value != null) {
-        store.dispatch('removeProduct', selectedIndex.value);
+        store.dispatch('products/removeProduct', selectedIndex.value);
         selectedIndex.value = null;
         selectedProduct.name = '';
         selectedProduct.price = 0;
@@ -133,16 +133,16 @@ const deleteProduct = () => {
 
 const sales = ref(false);
 const updateSales = () => {
-    store.dispatch('updateSales', sales.value);
+    store.dispatch('products/updateSales', sales.value);
 }
 const augmentPrice = amount => {
-    store.dispatch('augmentPrice', amount);
+    store.dispatch('products/augmentPrice', amount);
 }
 const reduicePrice = () => {
-    store.dispatch('reduicePrice');
+    store.dispatch('products/reduicePrice');
 }
 
-const productCount = computed(() => store.getters.countProducts);
+const productCount = computed(() => store.getters['products/countProducts']);
 
 </script>
 
