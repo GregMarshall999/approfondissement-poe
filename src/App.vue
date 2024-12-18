@@ -1,11 +1,11 @@
 <template>
-	<ProductLister />
-	<ProductViewer />
+	<AdminViewer/>
+  <CartViewer/>
 </template>
 
 <script setup>
-import ProductLister from './components/ProductLister.vue';
-import ProductViewer from './components/ProductViewer.vue';
+import AdminViewer from './components/AdminViewer.vue';
+import CartViewer from './components/CartViewer.vue';
 </script>
 
 <style scoped>
