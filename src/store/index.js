@@ -26,6 +26,9 @@ const getters = {
                 price: parseHalfPrice(p.price)
             }
         });
+    }, 
+    countProducts: state => {
+        return state.products.length;
     }
 }
 
@@ -39,6 +42,9 @@ const mutations = {
     SET_SALES: (state, payload) => {
         state.sales = payload;
     }, 
+    PUSH_PRODUCT: (state, payload) => {
+        state.products.push(payload);
+    },
     SET_PRODUCT: (state, payload) => {
         state.products[payload.index] = payload.product;
     },
@@ -57,6 +63,9 @@ const actions = {
     updateSales: (context, payload) => {
         context.commit('SET_SALES', payload);
     }, 
+    addProduct: (context, payload) => {
+        context.commit('PUSH_PRODUCT', payload);
+    },
     updateProduct: (context, payload) => {
         context.commit('SET_PRODUCT', payload);
     },

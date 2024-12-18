@@ -11,6 +11,7 @@
             
             <span class="price">{{ product.price }}</span>
         </ElementComp>
+        <slot></slot>
     </ul>
 </template>
 
@@ -37,7 +38,7 @@ const elementSelected = index => {
 
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @use '@/scss/Style.scss';
 
 .admin {

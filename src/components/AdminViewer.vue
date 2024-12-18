@@ -5,7 +5,35 @@
         <ListerComp 
             :is-admin="true"
             @element-selected="selectProduct"
-        />
+        >
+            <ElementComp
+                v-if="!newProductMode"
+                @selected="newProductMode = true"
+                :index="productCount"
+            >
+                <template #label>
+                    Nouveau Produit
+                </template>
+                <span class="price">+</span>
+            </ElementComp>
+            <li v-else>
+                <form @submit.prevent="newProduct">
+                    <input 
+                        type="text" 
+                        v-model="product.name"
+                        required
+                        placeholder="Nom Produit..." 
+                    />
+                    <input 
+                        type="number" 
+                        v-model="product.price"
+                        required
+                        placeholder="Prix Produit..." 
+                    />
+                    <button>Ajouter</button>
+                </form>
+            </li>
+        </ListerComp>
 
         <div class="admin-tools">
             <div class="admin-controls">
@@ -47,9 +75,10 @@
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import { useStore } from 'vuex';
 import ListerComp from './Lister/ListerComp.vue';
+import ElementComp from './Lister/ElementComp.vue';
 
 const store = useStore();
 
@@ -65,6 +94,18 @@ const selectProduct = index => {
 
     selectedProduct.name = storeProd.name;
     selectedProduct.price = storeProd.price;
+}
+
+const newProductMode = ref(false);
+const product = reactive({
+    name: null, 
+    price: null
+})
+const newProduct = () => {
+    store.dispatch('addProduct', { ...product });
+    newProductMode.value = false;
+    product.name = null;
+    product.price = null;
 }
 const updateProduct = () => {
     if(selectedIndex.value != null) {
@@ -100,6 +141,8 @@ const augmentPrice = amount => {
 const reduicePrice = () => {
     store.dispatch('reduicePrice');
 }
+
+const productCount = computed(() => store.getters.countProducts);
 
 </script>
 
