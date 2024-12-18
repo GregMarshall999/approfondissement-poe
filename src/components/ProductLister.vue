@@ -17,7 +17,7 @@ import { useStore } from 'vuex';
 
 const store = useStore();
 
-const productList = computed(() => store.state.products);
+const productList = computed(() => store.getters.getSaleProducts);
 
 </script>
 
