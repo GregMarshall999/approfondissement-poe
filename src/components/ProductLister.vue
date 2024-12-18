@@ -9,6 +9,7 @@
             </li>
         </ul>
 
+        <button @click="augmentPrice(4)">Augmenter Prix</button>
         <button @click="reduicePrice">Réduire Prix</button>
     </div>
 </template>
@@ -21,6 +22,9 @@ const store = useStore();
 
 const productList = computed(() => store.getters.getSaleProducts);
 
+const augmentPrice = amount => {
+    store.dispatch('augmentPrice', amount);
+}
 const reduicePrice = () => {
     store.dispatch('reduicePrice');
 }

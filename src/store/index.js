@@ -21,12 +21,18 @@ const getters = {
 }
 
 const mutations = {
+    AUGMENT_PRICE: (state, payload) => {
+        state.products.forEach(p => p.price += payload);
+    },
     REDUICE_PRICE: state => {
         state.products.forEach(p => p.price -= 1);
     }
 }
 
 const actions = {
+    augmentPrice: (context, payload) => {
+        setTimeout(() => context.commit('AUGMENT_PRICE', payload), 1000);
+    },
     reduicePrice: context => {
         setTimeout(() => context.commit('REDUICE_PRICE'), 1500);
     }
