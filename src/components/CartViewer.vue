@@ -41,19 +41,18 @@
 import { useStore } from 'vuex';
 import ListerComp from './Lister/ListerComp.vue';
 import UserCartComp from './Cart/UserCartComp.vue';
-import { computed, ref, watch } from 'vue';
+import { ref } from 'vue';
 import { useMouse } from '@/composables/MouseComposable';
+import { useEntitySelect } from '@/composables/EntitySelection';
 
 const store = useStore();
 
 //entity selection
-const currentEntity = ref('product');
-store.dispatch('setSelectedEntity', { forAdmin: false, entityName: currentEntity.value })
-watch(currentEntity, () => {
-    store.dispatch('setSelectedEntity', { forAdmin: false, entityName: currentEntity.value });
-})
-const selectedEntity = computed(() => store.getters.getSelectedEntity(false));
-const selectedEntityCaps = computed(() => store.getters.getSelectedEntityCaps(false));
+const { 
+    currentEntity,
+    selectedEntity, 
+    selectedEntityCaps
+} = useEntitySelect(false)
 
 const addToCart = index => {
     const product = store.getters[`${selectedEntity.value}s/get${selectedEntityCaps.value}`](index);

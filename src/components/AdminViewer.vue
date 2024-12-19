@@ -92,13 +92,14 @@
 </template>
 
 <script setup>
-import { computed, onMounted, reactive, ref, watch } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import { useStore } from 'vuex';
 import ListerComp from './Lister/ListerComp.vue';
 import ElementComp from './Lister/ElementComp.vue';
 import AdminForm from './Form/AdminForm.vue';
 import { requiredPositiveNumber, requiredText } from '@/helpers/validationHelper';
 import { useMouse } from '@/composables/MouseComposable';
+import { useEntitySelect } from '@/composables/EntitySelection';
 
 const store = useStore();
 
@@ -117,14 +118,11 @@ const formFields = reactive([
     }
 ])
 
-//entity selection
-const currentEntity = ref('product');
-store.dispatch('setSelectedEntity', { forAdmin: true, entityName: currentEntity.value });
-watch(currentEntity, () => {
-    store.dispatch('setSelectedEntity', { forAdmin: true, entityName: currentEntity.value });
-})
-const selectedEntity = computed(() => store.getters.getSelectedEntity(true));
-const selectedEntityCaps = computed(() => store.getters.getSelectedEntityCaps(true));
+const {
+    currentEntity, 
+    selectedEntity, 
+    selectedEntityCaps
+} = useEntitySelect(true);
 
 //element selection
 const selectedIndex = ref(null);

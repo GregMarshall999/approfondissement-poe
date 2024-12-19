@@ -16,14 +16,17 @@
 </template>
 
 <script setup>
+import { useEntitySelect } from '@/composables/EntitySelection';
 import { computed } from 'vue';
 import { useStore } from 'vuex';
 
 const store = useStore();
 
 //entity selection
-const selectedEntity = computed(() => store.getters.getSelectedEntity(false));
-const selectedEntityCaps = computed(() => store.getters.getSelectedEntityCaps(false));
+const {
+    selectedEntity, 
+    selectedEntityCaps
+} = useEntitySelect(false);
 
 const cart = computed(() => {
     const storeCart = store.getters['cart/getCart'];
