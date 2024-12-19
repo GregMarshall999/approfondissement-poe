@@ -29,3 +29,10 @@
         }
     }
 }
+
+@mixin button {
+    width: fit-content;
+    padding: 10px;
+    border-radius: 0;
+    border: none;
+}
