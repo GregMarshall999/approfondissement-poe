@@ -12,6 +12,7 @@
                 v-if="!newProductMode"
                 @selected="newProductMode = true"
                 :index="productCount"
+                :disabled="editProductMode"
             >
                 <template #label>
                     Nouveau Produit
@@ -19,21 +20,14 @@
                 <span class="price">+</span>
             </ElementComp>
             <li v-else>
-                <form @submit.prevent="newProduct">
-                    <input 
-                        type="text" 
-                        v-model="product.name"
-                        required
-                        placeholder="Nom Produit..." 
-                    />
-                    <input 
-                        type="number" 
-                        v-model="product.price"
-                        required
-                        placeholder="Prix Produit..." 
-                    />
-                    <button>Ajouter</button>
-                </form>
+                <AdminForm
+                    :fields="formFields"
+                    :submit-button-text="'Ajouter'"
+                    @success="newProduct"
+                />
+                <button @click="newProductMode=false">
+                    Annuler
+                </button>
             </li>
         </ListerComp>
 
@@ -56,21 +50,15 @@
             </div>
 
             <div class="product-editor">
-                <form @submit.prevent="updateProduct">
-                    <h3>Editer un Produit</h3>
-                    <input 
-                        type="text" 
-                        v-model="selectedProduct.name"
-                        placeholder="Nom Produit" 
+                <div v-show="!newProductMode">
+                    <h3 style="margin-bottom: 1em;">Editer un Produit</h3>
+                    <AdminForm
+                        :fields="formFields"
+                        :submit-button-text="'Editer'"
+                        @success="updateProduct"
                     />
-                    <input 
-                        type="number" 
-                        v-model="selectedProduct.price"
-                        placeholder="Prix Produit" 
-                    />
-                    <button>Editer</button>
-                </form>
-                <button @click="deleteProduct">Supprimer</button>
+                    <button @click="deleteProduct">Supprimer</button>
+                </div>                
             </div>
 
             <div class="entity-selector">
@@ -104,8 +92,25 @@ import { computed, reactive, ref, watch } from 'vue';
 import { useStore } from 'vuex';
 import ListerComp from './Lister/ListerComp.vue';
 import ElementComp from './Lister/ElementComp.vue';
+import AdminForm from './Form/AdminForm.vue';
+import { requiredPositiveNumber, requiredText } from '@/helpers/validationHelper';
 
 const store = useStore();
+
+const formFields = reactive([
+    {
+        placeholder: 'Nom Produit...', 
+        type: 'text', 
+        value: null, 
+        rules: [requiredText]
+    }, 
+    {
+        placeholder: 'Prix Produit...', 
+        type: 'number', 
+        value: null, 
+        rules: [requiredPositiveNumber]
+    }
+])
 
 //entity selection
 const currentEntity = ref('product');
@@ -118,39 +123,39 @@ const selectedEntityCaps = computed(() => store.getters.getSelectedEntityCaps(tr
 
 //element selection
 const selectedIndex = ref(null);
-const selectedProduct = reactive({
-    id: null,
-    name: null, 
-    price: null
-});
+const selectedProductId = ref(null);
 const selectProduct = index => {
     selectedIndex.value = index;
 
     const storeProd = store.getters[`${selectedEntity.value}s/get${selectedEntityCaps.value}`](index);
 
-    selectedProduct.id = storeProd.id;
-    selectedProduct.name = storeProd.name;
-    selectedProduct.price = storeProd.price;
+    selectedProductId.value = storeProd.id;
+
+    formFields[0].value = storeProd.name;
+    formFields[1].value = storeProd.price;
+
+    newProductMode.value = false;
+    editProductMode.value = true;
 }
 
 //CRUD operations
 const newProductMode = ref(false);
-const product = reactive({
-    name: null, 
-    price: null
-})
+const editProductMode = ref(false);
 const newProduct = () => {
-    store.dispatch(`${selectedEntity.value}s/add${selectedEntityCaps.value}`, { ...product });
+    const product = {
+        name: formFields[0].value, 
+        price: formFields[1].value
+    }
+    store.dispatch(`${selectedEntity.value}s/add${selectedEntityCaps.value}`, product);
     
     resetSelection();
-    newProductMode.value = false;
 }
 const updateProduct = () => {
     if(selectedIndex.value != null) {
         const product = { 
-            id: selectedProduct.id, 
-            name: selectedProduct.name, 
-            price: selectedProduct.price
+            id: selectedProductId.value, 
+            name: formFields[0].value, 
+            price: formFields[1].value
         };
         
         store.dispatch(`${selectedEntity.value}s/update${selectedEntityCaps.value}`, product);
@@ -159,8 +164,8 @@ const updateProduct = () => {
     }
 }
 const deleteProduct = () => {
-    if(selectedProduct.id != null) {
-        store.dispatch(`${selectedEntity.value}s/remove${selectedEntityCaps.value}`, selectedProduct.id);
+    if(selectedProductId.value != null) {
+        store.dispatch(`${selectedEntity.value}s/remove${selectedEntityCaps.value}`, selectedProductId.value);
         
         resetSelection();
     }
@@ -182,9 +187,13 @@ const productCount = computed(() => store.getters[`${selectedEntity.value}s/coun
 
 const resetSelection = () => {
     selectedIndex.value = null;
-    selectedProduct.id = null;
-    selectedProduct.name = null;
-    selectedProduct.price = null;
+
+    selectedProductId.value = null;
+
+    newProductMode.value = false;
+    editProductMode.value = false;
+
+    formFields.forEach(f => f.value = null);
 }
 
 </script>
