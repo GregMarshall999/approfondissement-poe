@@ -22,7 +22,12 @@ import ElementComp from './ElementComp.vue';
 
 const store = useStore();
 
-const products = computed(() => store.getters['products/getProducts']);
+const products = computed(() => {
+    const selectedEntity = store.getters.getSelectedEntity;
+    const selectedEntityCaps = store.getters.getSelectedEntityCaps;
+    
+    return store.getters[`${selectedEntity}s/get${selectedEntityCaps}s`]
+});
 
 const props = defineProps({
     isAdmin: {

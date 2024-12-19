@@ -70,18 +70,51 @@
                 </form>
                 <button @click="deleteProduct">Supprimer</button>
             </div>
+
+            <div class="entity-selector">
+                <div>
+                    <input 
+                        type="radio"
+                        v-model="currentEntity"
+                        value="product"
+                        checked
+                    />
+                    <label>Produits</label>
+                </div>
+                
+                <div>
+                    <input 
+                        type="radio"
+                        v-model="currentEntity"
+                        value="book"
+                    />
+                    <label>Livres</label>
+                </div>
+
+                {{ currentEntity }}
+            </div>
         </div>
     </div>
 </template>
 
 <script setup>
-import { computed, reactive, ref } from 'vue';
+import { computed, reactive, ref, watch } from 'vue';
 import { useStore } from 'vuex';
 import ListerComp from './Lister/ListerComp.vue';
 import ElementComp from './Lister/ElementComp.vue';
 
 const store = useStore();
 
+//entity selection
+const currentEntity = ref('product');
+store.dispatch('setSelectedEntity', currentEntity.value)
+watch(currentEntity, () => {
+    store.dispatch('setSelectedEntity', currentEntity.value);
+})
+const selectedEntity = computed(() => store.getters.getSelectedEntity);
+const selectedEntityCaps = computed(() => store.getters.getSelectedEntityCaps);
+
+//element selection
 const selectedIndex = ref(null);
 const selectedProduct = reactive({
     name: '', 
@@ -90,32 +123,33 @@ const selectedProduct = reactive({
 const selectProduct = index => {
     selectedIndex.value = index;
 
-    const storeProd = store.getters['products/getProduct'](index);
+    const storeProd = store.getters[`${selectedEntity.value}s/get${selectedEntityCaps.value}`](index);
 
     selectedProduct.name = storeProd.name;
     selectedProduct.price = storeProd.price;
 }
 
+//CRUD operations
 const newProductMode = ref(false);
 const product = reactive({
     name: null, 
     price: null
 })
 const newProduct = () => {
-    store.dispatch('products/addProduct', { ...product });
+    store.dispatch(`${selectedEntity.value}s/add${selectedEntityCaps.value}`, { ...product });
     newProductMode.value = false;
     product.name = null;
     product.price = null;
 }
 const updateProduct = () => {
     if(selectedIndex.value != null) {
-        store.dispatch('products/updateProduct', {
-            index: selectedIndex.value, 
-            product: {
-                name: selectedProduct.name, 
-                price: selectedProduct.price
-            }
-        })
+        const payload = { index: selectedIndex.value };
+        payload[`${selectedEntity.value}`] = {
+            name: selectedProduct.name, 
+            price: selectedProduct.price
+        }
+        
+        store.dispatch(`${selectedEntity.value}s/update${selectedEntityCaps.value}`, payload);
 
         selectedIndex.value = null;
         selectedProduct.name = '';
@@ -124,25 +158,26 @@ const updateProduct = () => {
 }
 const deleteProduct = () => {
     if(selectedIndex.value != null) {
-        store.dispatch('products/removeProduct', selectedIndex.value);
+        store.dispatch(`${selectedEntity.value}s/remove${selectedEntityCaps.value}`, selectedIndex.value);
         selectedIndex.value = null;
         selectedProduct.name = '';
         selectedProduct.price = 0;
     }
 }
 
+//Price operations
 const sales = ref(false);
 const updateSales = () => {
-    store.dispatch('products/updateSales', sales.value);
+    store.dispatch(`${selectedEntity.value}s/updateSales`, sales.value);
 }
 const augmentPrice = amount => {
-    store.dispatch('products/augmentPrice', amount);
+    store.dispatch(`${selectedEntity.value}s/augmentPrice`, amount);
 }
 const reduicePrice = () => {
-    store.dispatch('products/reduicePrice');
+    store.dispatch(`${selectedEntity.value}s/reduicePrice`);
 }
 
-const productCount = computed(() => store.getters['products/countProducts']);
+const productCount = computed(() => store.getters[`${selectedEntity.value}s/count${selectedEntityCaps.value}s`]);
 
 </script>
 
@@ -230,6 +265,10 @@ const productCount = computed(() => store.getters['products/countProducts']);
         }
 
         .product-editor {
+
+            border-right: solid 2px rgb(105, 105, 105);
+            padding-right: 10%;
+
             form {
                 display: flex;
                 flex-direction: column;
@@ -245,6 +284,11 @@ const productCount = computed(() => store.getters['products/countProducts']);
                     width: fit-content;
                 }
             }
+        }
+
+        .entity-selector {
+            display: flex;
+            gap: 1em;
         }
     }
 }
