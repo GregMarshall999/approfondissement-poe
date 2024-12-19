@@ -21,5 +21,11 @@
       "price": 2.33
     }
   ],
-  "cart": []
+  "cart": [
+    {
+      "id": "14bb",
+      "name": "Bananes",
+      "count": 1
+    }
+  ]
 }
