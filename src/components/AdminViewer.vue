@@ -31,7 +31,7 @@
             </li>
         </ListerComp>
 
-        <div class="admin-tools">
+        <div class="admin-tools" ref="adminDashboard">
             <div class="admin-controls">
                 <h3>Contrôlles Admin</h3>
 
@@ -82,18 +82,23 @@
                 </div>
 
                 {{ currentEntity }}
+
+                <div>
+                    x: {{ x }} | y: {{ y }}
+                </div>
             </div>
         </div>
     </div>
 </template>
 
 <script setup>
-import { computed, reactive, ref, watch } from 'vue';
+import { computed, onMounted, reactive, ref, watch } from 'vue';
 import { useStore } from 'vuex';
 import ListerComp from './Lister/ListerComp.vue';
 import ElementComp from './Lister/ElementComp.vue';
 import AdminForm from './Form/AdminForm.vue';
 import { requiredPositiveNumber, requiredText } from '@/helpers/validationHelper';
+import { useMouse } from '@/composables/MouseComposable';
 
 const store = useStore();
 
@@ -195,6 +200,9 @@ const resetSelection = () => {
 
     formFields.forEach(f => f.value = null);
 }
+
+const adminDashboard = ref(null);
+const { x, y } = useMouse(adminDashboard);
 
 </script>
 
@@ -305,6 +313,7 @@ const resetSelection = () => {
 
         .entity-selector {
             display: flex;
+            flex-direction: column;
             gap: 1em;
         }
     }
