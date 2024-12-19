@@ -23,16 +23,21 @@ import ElementComp from './ElementComp.vue';
 const store = useStore();
 
 const products = computed(() => {
-    const selectedEntity = store.getters.getSelectedEntity;
-    const selectedEntityCaps = store.getters.getSelectedEntityCaps;
-    
-    return store.getters[`${selectedEntity}s/get${selectedEntityCaps}s`]
+    return store.getters[`${props.selectedEntity}s/get${props.selectedEntityCaps}s`]
 });
 
 const props = defineProps({
     isAdmin: {
         type: Boolean, 
         default: false
+    }, 
+    selectedEntity: {
+        type: String, 
+        required: true
+    }, 
+    selectedEntityCaps: {
+        type: String, 
+        required: true
     }
 })
 

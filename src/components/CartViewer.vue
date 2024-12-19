@@ -6,6 +6,8 @@
             <ListerComp 
                 @element-selected="addToCart"
                 style="width: 50%;"
+                :selected-entity="selectedEntity"
+                :selected-entity-caps="selectedEntityCaps"
             />
             <UserCartComp/>
 
@@ -44,12 +46,12 @@ const store = useStore();
 
 //entity selection
 const currentEntity = ref('product');
-store.dispatch('setSelectedEntity', currentEntity.value)
+store.dispatch('setSelectedEntity', { forAdmin: false, entityName: currentEntity.value })
 watch(currentEntity, () => {
-    store.dispatch('setSelectedEntity', currentEntity.value);
+    store.dispatch('setSelectedEntity', { forAdmin: false, entityName: currentEntity.value });
 })
-const selectedEntity = computed(() => store.getters.getSelectedEntity);
-const selectedEntityCaps = computed(() => store.getters.getSelectedEntityCaps);
+const selectedEntity = computed(() => store.getters.getSelectedEntity(false));
+const selectedEntityCaps = computed(() => store.getters.getSelectedEntityCaps(false));
 
 const addToCart = index => {
     const product = store.getters[`${selectedEntity.value}s/get${selectedEntityCaps.value}`](index);

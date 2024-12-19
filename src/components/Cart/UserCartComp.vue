@@ -16,19 +16,14 @@
 </template>
 
 <script setup>
-import { computed, ref, watch } from 'vue';
+import { computed } from 'vue';
 import { useStore } from 'vuex';
 
 const store = useStore();
 
 //entity selection
-const currentEntity = ref('product');
-store.dispatch('setSelectedEntity', currentEntity.value)
-watch(currentEntity, () => {
-    store.dispatch('setSelectedEntity', currentEntity.value);
-})
-const selectedEntity = computed(() => store.getters.getSelectedEntity);
-const selectedEntityCaps = computed(() => store.getters.getSelectedEntityCaps);
+const selectedEntity = computed(() => store.getters.getSelectedEntity(false));
+const selectedEntityCaps = computed(() => store.getters.getSelectedEntityCaps(false));
 
 const cart = computed(() => {
     const storeCart = store.getters['cart/getCart'];

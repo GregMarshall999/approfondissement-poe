@@ -5,6 +5,8 @@
         <ListerComp 
             :is-admin="true"
             @element-selected="selectProduct"
+            :selected-entity="selectedEntity"
+            :selected-entity-caps="selectedEntityCaps"
         >
             <ElementComp
                 v-if="!newProductMode"
@@ -107,12 +109,12 @@ const store = useStore();
 
 //entity selection
 const currentEntity = ref('product');
-store.dispatch('setSelectedEntity', currentEntity.value)
+store.dispatch('setSelectedEntity', { forAdmin: true, entityName: currentEntity.value });
 watch(currentEntity, () => {
-    store.dispatch('setSelectedEntity', currentEntity.value);
+    store.dispatch('setSelectedEntity', { forAdmin: true, entityName: currentEntity.value });
 })
-const selectedEntity = computed(() => store.getters.getSelectedEntity);
-const selectedEntityCaps = computed(() => store.getters.getSelectedEntityCaps);
+const selectedEntity = computed(() => store.getters.getSelectedEntity(true));
+const selectedEntityCaps = computed(() => store.getters.getSelectedEntityCaps(true));
 
 //element selection
 const selectedIndex = ref(null);

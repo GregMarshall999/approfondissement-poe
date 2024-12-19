@@ -4,27 +4,46 @@ import cart from "./cart";
 import books from "./books";
 
 const state = {
-    selectedEntity: null
+    adminSelectedEntity: null, 
+    cartSelectedEntity: null
 }
 
 const getters = {
-    getSelectedEntity: state =>  {
-        return state.selectedEntity;
+    getSelectedEntity: state => forAdmin =>  {
+        if(forAdmin) {
+            return state.adminSelectedEntity;
+        }
+        else {
+            return state.cartSelectedEntity;
+        }
     }, 
-    getSelectedEntityCaps: state => {
-        return `${state.selectedEntity.charAt(0).toUpperCase()}${state.selectedEntity.substring(1)}`;
+    getSelectedEntityCaps: state => forAdmin => {
+        if(forAdmin) {
+            return `${state.adminSelectedEntity.charAt(0).toUpperCase()}${state.adminSelectedEntity.substring(1)}`;
+        }
+        else {
+            return `${state.cartSelectedEntity.charAt(0).toUpperCase()}${state.cartSelectedEntity.substring(1)}`;
+        }
     }
 }
 
 const mutations = {
-    SET_SELECTED_ENTITY: (state, entityName) => {
-        state.selectedEntity = entityName;
+    SET_ADMIN_SELECTED_ENTITY: (state, entityName) => {
+        state.adminSelectedEntity = entityName;
+    }, 
+    SET_CART_SELECTED_ENTITY: (state, entityName) => {
+        state.cartSelectedEntity = entityName;
     }
 }
 
 const actions = {
-    setSelectedEntity: (context, entityName) => {
-        context.commit('SET_SELECTED_ENTITY', entityName);
+    setSelectedEntity: (context, payload) => {
+        if(payload.forAdmin) {
+            context.commit('SET_ADMIN_SELECTED_ENTITY', payload.entityName);
+        }
+        else {
+            context.commit('SET_CART_SELECTED_ENTITY', payload.entityName);
+        }
     }
 }
 
