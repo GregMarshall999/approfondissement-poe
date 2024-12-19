@@ -1,3 +1,5 @@
+import { updateProduct } from "@/services/product.service";
+
 export const parseHalfPrice = price => {
     let hp = price / 2;
 
@@ -13,3 +15,18 @@ export const parseHalfPrice = price => {
 
     return hp;
 };
+
+export const changeProductsPrice = async (products, priceChange) => {
+    const prods = products.map(p => {
+        return {
+            id: p.id, 
+            name: p.name, 
+            price: p.price
+        }
+    })
+
+    for(var p of prods) {
+        p.price += priceChange;
+        await updateProduct(p.id, p);
+    }
+}

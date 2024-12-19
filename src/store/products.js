@@ -1,18 +1,14 @@
-import { parseHalfPrice } from "@/helpers/productHelper";
+import { changeProductsPrice, parseHalfPrice } from "@/helpers/productHelper";
+import { createProduct, deleteProduct, findProducts, updateProduct } from "@/services/product.service";
 
 const state = {
-    products: [
-        { name: 'Bananes', price: 2 }, 
-        { name: 'Pommes', price: 1 }, 
-        { name: 'Salade', price: 3 }, 
-        { name: 'Abricots', price: 2.33 }
-    ], 
+    products: [], 
     sales: false
 }
 
 const getters = { 
-    getProduct: state => payload => {
-        return state.products[payload];
+    getProduct: state => productIndex => {
+        return state.products[productIndex];
     },
     getProducts: state => {
         if(!state.sales) {
@@ -29,9 +25,9 @@ const getters = {
     countProducts: state => {
         return state.products.length;
     }, 
-    findProductPrice: state => payload => {
+    findProductPrice: state => productName => {
         const cost = state.products.filter(p => {
-            if(p.name == payload) {
+            if(p.name == productName) {
                 return p.price;
             }
         });
@@ -48,44 +44,60 @@ const getters = {
 }
 
 const mutations = {
-    AUGMENT_PRICE: (state, payload) => {
-        state.products.forEach(p => p.price += payload);
-    },
-    REDUICE_PRICE: state => {
-        state.products.forEach(p => p.price -= 1);
+    SET_SALES: (state, salesValue) => {
+        state.sales = salesValue;
     }, 
-    SET_SALES: (state, payload) => {
-        state.sales = payload;
-    }, 
-    PUSH_PRODUCT: (state, payload) => {
-        state.products.push(payload);
-    },
-    SET_PRODUCT: (state, payload) => {
-        state.products[payload.index] = payload.product;
-    },
-    DELETE_PRODUCT: (state, payload) => {
-        state.products.splice(payload, 1);
+    SET_PRODUCTS: (state, productsValue) => {
+        state.products = productsValue
     }
 }
 
 const actions = {
-    augmentPrice: (context, payload) => {
-        setTimeout(() => context.commit('AUGMENT_PRICE', payload), 1000);
+    loadProducts: context => {
+        findProducts()
+            .then(res => {
+                console.log(res);
+                context.commit('SET_PRODUCTS', res.data);
+            })
+            .catch(error => console.error('Error loading products', error));
     },
-    reduicePrice: context => {
-        setTimeout(() => context.commit('REDUICE_PRICE'), 1500);
+    augmentPrice: async (context, addToPrice) => {
+        await changeProductsPrice(context.getters.getProducts, addToPrice);
+        context.dispatch('loadProducts');
+    },
+    reduicePrice: async context => {
+        await changeProductsPrice(context.getters.getProducts, -1);
+        context.dispatch('loadProducts');
+    }, 
+    addProduct: (context, product) => {
+        createProduct(product)
+            .then(res => {
+                if(res.status == 201) {
+                    context.dispatch('loadProducts');
+                }
+            }
+        ) 
+    },
+    updateProduct: (context, product) => {
+        updateProduct(product.id, product)
+            .then(res => {
+                if(res.status == 200) {
+                    context.dispatch('loadProducts');
+                }
+            }
+        )
+    },
+    removeProduct: (context, productId) => {
+        deleteProduct(productId)
+            .then(res => {
+                if(res.status == 200) {
+                    context.dispatch('loadProducts');
+                }
+            }
+        )
     }, 
     updateSales: (context, payload) => {
         context.commit('SET_SALES', payload);
-    }, 
-    addProduct: (context, payload) => {
-        context.commit('PUSH_PRODUCT', payload);
-    },
-    updateProduct: (context, payload) => {
-        context.commit('SET_PRODUCT', payload);
-    },
-    removeProduct: (context, payload) => {
-        context.commit('DELETE_PRODUCT', payload);
     }
 }
 
