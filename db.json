@@ -19,6 +19,12 @@
       "id": "4",
       "name": "Abricots",
       "price": 2.33
+    },
+    {
+      "id": "ae5b",
+      "name": "Poire",
+      "price": 2
     }
-  ]
+  ],
+  "cart": []
 }

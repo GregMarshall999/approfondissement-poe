@@ -10,7 +10,10 @@ import CartViewer from './components/CartViewer.vue';
 import { onBeforeMount } from 'vue';
 
 const store = useStore();
-onBeforeMount(() => store.dispatch('products/loadProducts'));
+onBeforeMount(() => {
+  store.dispatch('products/loadProducts')
+  store.dispatch('cart/loadUserCart')
+});
 </script>
 
 <style scoped>

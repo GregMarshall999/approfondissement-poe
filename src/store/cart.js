@@ -1,3 +1,5 @@
+import { addArticleToCart, findByArticleName, getAllCartItems, removeArticle, updateArticle } from "@/services/cart.service";
+
 const state = {
     userCart: new Map()
 }
@@ -11,26 +13,50 @@ const getters = {
 }
 
 const mutations = {
-    ADD_TO_CART: (state, payload) => {
-        let count = 1; 
-
-        if(state.userCart.has(payload)) {
-            count = state.userCart.get(payload) + 1;
-        }
-
-        state.userCart.set(payload, count);
-    }, 
-    CLEAR_CART: state => {
+    UPDATE_CART: (state, userCart) => {
         state.userCart.clear();
+
+        userCart.forEach(article => {
+            state.userCart.set(article.name, article.count);
+        });
     }
 }
 
 const actions = {
-    putInCart: (context, payload) => {
-        context.commit('ADD_TO_CART', payload);
+    loadUserCart: context => {
+        getAllCartItems()
+            .then(res => {
+                context.commit('UPDATE_CART', res.data);
+            }
+        )
+    },
+    putInCart: async (context, articleName) => {
+        let count = 1; 
+
+        const res = await findByArticleName(articleName)
+            
+        if(res.data.length == 0) {
+            await addArticleToCart({
+                name: articleName, 
+                count
+            });
+        }
+        else if (res.data.length == 1) {
+            const article = res.data[0];
+            article.count++;
+            await updateArticle(article);
+        }
+
+        context.dispatch('loadUserCart')
     }, 
-    pay: context => {
-        context.commit('CLEAR_CART');
+    pay: async context => {
+        const res = await getAllCartItems()
+            
+        for(var article of res.data) {
+            await removeArticle(article.id);
+        }
+        
+        context.dispatch('loadUserCart');
     }
 }
 
