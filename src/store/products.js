@@ -56,7 +56,6 @@ const actions = {
     loadProducts: context => {
         findProducts()
             .then(res => {
-                console.log(res);
                 context.commit('SET_PRODUCTS', res.data);
             })
             .catch(error => console.error('Error loading products', error));

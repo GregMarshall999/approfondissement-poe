@@ -4,8 +4,13 @@
 </template>
 
 <script setup>
+import { useStore } from 'vuex';
 import AdminViewer from './components/AdminViewer.vue';
 import CartViewer from './components/CartViewer.vue';
+import { onBeforeMount } from 'vue';
+
+const store = useStore();
+onBeforeMount(() => store.dispatch('products/loadProducts'));
 </script>
 
 <style scoped>

@@ -119,14 +119,16 @@ const selectedEntityCaps = computed(() => store.getters.getSelectedEntityCaps(tr
 //element selection
 const selectedIndex = ref(null);
 const selectedProduct = reactive({
-    name: '', 
-    price: 0
+    id: null,
+    name: null, 
+    price: null
 });
 const selectProduct = index => {
     selectedIndex.value = index;
 
     const storeProd = store.getters[`${selectedEntity.value}s/get${selectedEntityCaps.value}`](index);
 
+    selectedProduct.id = storeProd.id;
     selectedProduct.name = storeProd.name;
     selectedProduct.price = storeProd.price;
 }
@@ -139,31 +141,28 @@ const product = reactive({
 })
 const newProduct = () => {
     store.dispatch(`${selectedEntity.value}s/add${selectedEntityCaps.value}`, { ...product });
+    
+    resetSelection();
     newProductMode.value = false;
-    product.name = null;
-    product.price = null;
 }
 const updateProduct = () => {
     if(selectedIndex.value != null) {
-        const payload = { index: selectedIndex.value };
-        payload[`${selectedEntity.value}`] = {
+        const product = { 
+            id: selectedProduct.id, 
             name: selectedProduct.name, 
             price: selectedProduct.price
-        }
+        };
         
-        store.dispatch(`${selectedEntity.value}s/update${selectedEntityCaps.value}`, payload);
+        store.dispatch(`${selectedEntity.value}s/update${selectedEntityCaps.value}`, product);
 
-        selectedIndex.value = null;
-        selectedProduct.name = '';
-        selectedProduct.price = 0;
+        resetSelection();
     }
 }
 const deleteProduct = () => {
-    if(selectedIndex.value != null) {
-        store.dispatch(`${selectedEntity.value}s/remove${selectedEntityCaps.value}`, selectedIndex.value);
-        selectedIndex.value = null;
-        selectedProduct.name = '';
-        selectedProduct.price = 0;
+    if(selectedProduct.id != null) {
+        store.dispatch(`${selectedEntity.value}s/remove${selectedEntityCaps.value}`, selectedProduct.id);
+        
+        resetSelection();
     }
 }
 
@@ -180,6 +179,13 @@ const reduicePrice = () => {
 }
 
 const productCount = computed(() => store.getters[`${selectedEntity.value}s/count${selectedEntityCaps.value}s`]);
+
+const resetSelection = () => {
+    selectedIndex.value = null;
+    selectedProduct.id = null;
+    selectedProduct.name = null;
+    selectedProduct.price = null;
+}
 
 </script>
 
