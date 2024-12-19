@@ -202,16 +202,6 @@ const resetSelection = () => {
 const adminDashboard = ref(null);
 const { x, y } = useMouse(adminDashboard);
 
-const vButton = {
-    mounted: (e) => {
-        e.style.width = 'fit-content';
-        e.style.padding = '10px';
-        e.style.borderRadius = 0;
-        e.style.border = 'none';
-        e.style.marginTop = '1em';
-    }
-}
-
 </script>
 
 <style lang="scss">

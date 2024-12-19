@@ -11,7 +11,7 @@
             </li>
         </ul>
 
-        <button v-if="cart.length > 0" @click="store.dispatch('cart/pay')">Payer</button>
+        <button v-button v-if="cart.length > 0" @click="store.dispatch('cart/pay')">Payer</button>
     </div>
 </template>
 
