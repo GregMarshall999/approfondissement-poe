@@ -8,6 +8,27 @@
                 style="width: 50%;"
             />
             <UserCartComp/>
+
+            <div class="entity-selector">
+                <div>
+                    <input 
+                        type="radio"
+                        v-model="currentEntity"
+                        value="product"
+                        checked
+                    />
+                    <label>Produits</label>
+                </div>
+                
+                <div>
+                    <input 
+                        type="radio"
+                        v-model="currentEntity"
+                        value="book"
+                    />
+                    <label>Livres</label>
+                </div>
+            </div>
         </div>
         
     </div>
@@ -17,11 +38,21 @@
 import { useStore } from 'vuex';
 import ListerComp from './Lister/ListerComp.vue';
 import UserCartComp from './Cart/UserCartComp.vue';
+import { computed, ref, watch } from 'vue';
 
 const store = useStore();
 
+//entity selection
+const currentEntity = ref('product');
+store.dispatch('setSelectedEntity', currentEntity.value)
+watch(currentEntity, () => {
+    store.dispatch('setSelectedEntity', currentEntity.value);
+})
+const selectedEntity = computed(() => store.getters.getSelectedEntity);
+const selectedEntityCaps = computed(() => store.getters.getSelectedEntityCaps);
+
 const addToCart = index => {
-    const product = store.getters['products/getProduct'](index);
+    const product = store.getters[`${selectedEntity.value}s/get${selectedEntityCaps.value}`](index);
 
     if(product) {
         store.dispatch('cart/putInCart', product.name);
