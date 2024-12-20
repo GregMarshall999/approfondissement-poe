@@ -11,7 +11,7 @@
             </li>
         </ul>
 
-        <button v-button v-if="cart.length > 0" @click="store.dispatch('cart/pay')">Payer</button>
+        <button v-button v-if="cart.length > 0" @click="store.dispatch('cart/pay', selectedEntity)">Payer</button>
     </div>
 </template>
 
@@ -31,14 +31,21 @@ const {
 const cart = computed(() => {
     const storeCart = store.getters['cart/getCart'];
 
-    return storeCart.map(item => {
-        const cost = store.getters[`${selectedEntity.value}s/find${selectedEntityCaps.value}Price`](item.name);
-        return {
-            name: item.name, 
-            count: item.count, 
-            cost: cost*item.count
+    const displayCart = [];
+
+    for(var item of storeCart) {
+        if(item.type == selectedEntity.value) {
+            const cost = store.getters[`${selectedEntity.value}s/find${selectedEntityCaps.value}Price`](item.name);
+
+            displayCart.push({
+                name: item.name, 
+                count: item.count, 
+                cost: cost*item.count
+            }) 
         }
-    });
+    }
+
+    return displayCart;
 })
 
 const total = computed(() => {

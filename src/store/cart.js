@@ -7,7 +7,11 @@ const state = {
 const getters = {
     getCart: state => {
         return Array.from(state.userCart, 
-            ([name, count]) => ({ name, count })
+            ([name, article]) => ({ 
+                name, 
+                type: article.type, 
+                count: article.count 
+            })
         );
     }
 }
@@ -17,7 +21,10 @@ const mutations = {
         state.userCart.clear();
 
         userCart.forEach(article => {
-            state.userCart.set(article.name, article.count);
+            state.userCart.set(article.name, {
+                type: article.type, 
+                count: article.count
+            });
         });
     }
 }
@@ -30,14 +37,15 @@ const actions = {
             }
         )
     },
-    putInCart: async (context, articleName) => {
+    putInCart: async (context, article) => {
         let count = 1; 
 
-        const res = await findByArticleName(articleName)
+        const res = await findByArticleName(article.name)
             
         if(res.data.length == 0) {
             await addArticleToCart({
-                name: articleName, 
+                name: article.name,
+                type: article.type,
                 count
             });
         }
@@ -49,11 +57,13 @@ const actions = {
 
         context.dispatch('loadUserCart')
     }, 
-    pay: async context => {
+    pay: async (context, articleType) => {
         const res = await getAllCartItems()
             
         for(var article of res.data) {
-            await removeArticle(article.id);
+            if(article.type == articleType) {
+                await removeArticle(article.id);
+            }
         }
         
         context.dispatch('loadUserCart');

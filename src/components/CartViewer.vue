@@ -62,7 +62,10 @@ const addToCart = index => {
     const product = store.getters[`${selectedEntity.value}s/get${selectedEntityCaps.value}`](index);
 
     if(product) {
-        store.dispatch('cart/putInCart', product.name);
+        store.dispatch('cart/putInCart', {
+            name: product.name, 
+            type: product.type
+        });
     }
 }
 

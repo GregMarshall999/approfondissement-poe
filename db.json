@@ -3,35 +3,60 @@
     {
       "id": "1",
       "name": "Bananes",
-      "price": 2
+      "price": 2,
+      "type": "product"
     },
     {
       "id": "2",
       "name": "Pommes",
-      "price": 1
+      "price": 1,
+      "type": "product"
     },
     {
       "id": "3",
       "name": "Salade",
-      "price": 3
+      "price": 3,
+      "type": "product"
     },
     {
       "id": "4",
       "name": "Abricots",
-      "price": 2.33
+      "price": 2.33,
+      "type": "product"
     }
   ],
   "books": [
     {
       "id": "1",
       "name": "LOTR",
-      "price": 5
+      "price": 5,
+      "type": "book"
     },
     {
       "id": "2",
       "name": "GOT",
-      "price": 10
+      "price": 10,
+      "type": "book"
     }
   ],
-  "cart": []
+  "cart": [
+    {
+      "id": "d819",
+      "name": "Bananes",
+      "type": "product",
+      "count": 1
+    },
+    {
+      "id": "bf02",
+      "name": "Pommes",
+      "type": "product",
+      "count": 1
+    },
+    {
+      "id": "a6f4",
+      "name": "Salade",
+      "type": "product",
+      "count": 1
+    }
+  ]
 }
