@@ -1,6 +1,10 @@
 <template>
     <div class="viewer" ref="cartDashboard">
-        <h2>Produits disponibles</h2>
+        <h2>{{ 
+                currentEntity == 'product' ? 'Produits' : 
+                currentEntity == 'book' ? 'Livres' : '' 
+            }} disponibles
+        </h2>
 
         <div style="display: flex; gap: 10%;">
             <ListerComp 

@@ -1,10 +1,9 @@
+import { changeBooksPrice } from "@/helpers/bookHelper";
 import { parseHalfPrice } from "@/helpers/productHelper";
+import { createBook, deleteBook, findBooks, updateBook } from "@/services/book.service";
 
 const state = {
-    books: [
-        { name: 'LOTR', price: 5 }, 
-        { name: 'GOT', price: 10 }, 
-    ], 
+    books: [], 
     sales: false
 }
 
@@ -46,44 +45,55 @@ const getters = {
 }
 
 const mutations = {
-    AUGMENT_PRICE: (state, payload) => {
-        state.books.forEach(b => b.price += payload);
+    SET_BOOKS: (state, books) => {
+        state.books = books;
     },
-    REDUICE_PRICE: state => {
-        state.books.forEach(b => b.price -= 1);
-    }, 
     SET_SALES: (state, payload) => {
         state.sales = payload;
-    }, 
-    PUSH_BOOK: (state, payload) => {
-        state.books.push(payload);
-    },
-    SET_BOOK: (state, payload) => {
-        state.books[payload.index] = payload.book;
-    },
-    DELETE_BOOK: (state, payload) => {
-        state.books.splice(payload, 1);
     }
 }
 
 const actions = {
-    augmentPrice: (context, payload) => {
-        context.commit('AUGMENT_PRICE', payload);
+    loadBooks: context => {
+        findBooks().then(res => {
+            context.commit('SET_BOOKS', res.data);
+        })
+        .catch(error => console.error('Error loading books', error));
     },
-    reduicePrice: context => {
-        context.commit('REDUICE_PRICE');
+    augmentPrice: async (context, addToPrice) => {
+        await changeBooksPrice(context.getters.getBooks, addToPrice);
+        context.dispatch('loadBooks');
+    },
+    reduicePrice: async context => {
+        await changeBooksPrice(context.getters.getBooks, -1);
+        context.dispatch('loadBooks');
     }, 
+    addBook: (context, book) => {
+        createBook(book)
+            .then(res => {
+                if(res.status == 201) {
+                    context.dispatch('loadBooks');
+                }
+            })
+    },
+    updateBook: (context, book) => {
+        updateBook(book.id, book)
+            .then(res => {
+                if(res.status == 200) {
+                    context.dispatch('loadBooks');
+                }
+            })
+    },
+    removeBook: (context, bookId) => {
+        deleteBook(bookId)
+            .then(res => {
+                if(res.status == 200) {
+                    context.dispatch('loadBooks');
+                }
+            })
+    },
     updateSales: (context, payload) => {
         context.commit('SET_SALES', payload);
-    }, 
-    addBook: (context, payload) => {
-        context.commit('PUSH_BOOK', payload);
-    },
-    updateBook: (context, payload) => {
-        context.commit('SET_BOOK', payload);
-    },
-    removeBook: (context, payload) => {
-        context.commit('DELETE_BOOK', payload);
     }
 }
 

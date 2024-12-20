@@ -21,11 +21,17 @@
       "price": 2.33
     }
   ],
-  "cart": [
+  "books": [
     {
-      "id": "14bb",
-      "name": "Bananes",
-      "count": 1
+      "id": "1",
+      "name": "LOTR",
+      "price": 5
+    },
+    {
+      "id": "2",
+      "name": "GOT",
+      "price": 10
     }
-  ]
+  ],
+  "cart": []
 }

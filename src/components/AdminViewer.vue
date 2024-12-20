@@ -1,6 +1,11 @@
 <template>
     <div class="lister">
-        <h2>Tableau Admin Produits</h2>
+        <h2>
+            Tableau Admin {{ 
+                currentEntity == 'product' ? 'Produits' : 
+                currentEntity == 'book' ? 'Livres' : '' 
+            }}
+        </h2>
 
         <ListerComp 
             :is-admin="true"

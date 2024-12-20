@@ -12,6 +12,7 @@ import { onBeforeMount } from 'vue';
 const store = useStore();
 onBeforeMount(() => {
   store.dispatch('products/loadProducts')
+  store.dispatch('books/loadBooks');
   store.dispatch('cart/loadUserCart')
 });
 </script>
